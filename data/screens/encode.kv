@@ -25,7 +25,14 @@ ShowcaseScreen:
             FloatLayout:
                 CFloatLayout:
                     id: crypto
-                
+        
+        TabbedPanelItem:
+            id: tab_dec
+            text: 'DECRYPT'
+            on_release: app.show_decoding_method(decrypt)
+            FloatLayout:
+                CFloatLayout:
+                    id: decrypt
 
 <CFloatLayout@FloatLayout+BackgroundColor>
 <CBoxLayout@BoxLayout+BackgroundColor>
