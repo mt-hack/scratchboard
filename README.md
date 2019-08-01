@@ -1,5 +1,5 @@
 # Scratchboard
-A developer tool panel with different kinds of functions for testing web security.
+A set of developer tool panels with different kinds of functions for testing web security.
 
 ## Functions
 
