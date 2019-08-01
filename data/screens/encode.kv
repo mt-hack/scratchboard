@@ -23,8 +23,9 @@ ShowcaseScreen:
                             on_press: app.do_url_encode(url_encode_input, url_encode_answer)
                         Tab1TextInput:
                             id: url_encode_input
-                    Label:
+                    TextInput:
                         id: url_encode_answer
+                        readonly: True
                         text: 'Answer'
                         font_size: 48
                 
@@ -56,8 +57,9 @@ ShowcaseScreen:
                             on_press: app.do_hexencode(hex_encode_input, encode_answer)
                         Tab2TextInput:
                             id: hex_encode_input
-                    Label:
+                    TextInput:
                         id: encode_answer
+                        readonly: True
                         text: 'Answer'
                         font_size: 48
         
@@ -89,8 +91,9 @@ ShowcaseScreen:
                             on_press: app.do_hexdecode(hex_decode_input, decode_answer)
                         Tab3TextInput:
                             id: hex_decode_input
-                    Label:
+                    TextInput:
                         id: decode_answer
+                        readonly: True
                         text: 'Answer'
                         font_size: 48
 

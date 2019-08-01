@@ -297,9 +297,13 @@ class ShowcaseApp(App):
         URL = TextInput(text='', multiline=False, x = 140, y=255,size_hint=(None, None), height=30, width=500)
         layout.add_widget(URL)
 
-    def do_base64decode(self, input, answer_label):            
-        answer = base64.b64decode(bytes(input.text, 'utf-8'))
-        answer_label.text = answer.decode('utf-8')
+    def do_base64decode(self, input, answer_label):
+        try:        
+            answer = base64.b64decode(bytes(input.text, 'utf-8'))
+            answer = answer.decode('utf-8')
+        except:
+            answer = "Invalid Input!!!"
+        answer_label.text = answer
 
     def do_md5decode(self, input, answer_label):
         m = hashlib.md5()
@@ -310,10 +314,11 @@ class ShowcaseApp(App):
     def do_hexdecode(self, input, answer_label):
         try:
             answer = binascii.unhexlify(bytes(input.text, 'utf-8'))
-            answer_label.text = answer.decode('utf-8')
+            answer = answer.decode('utf-8')
         except:
+            answer = "Invalid Input!!!"
             print("[hex] Invalid input")
-
+        answer_label.text = answer
     def showcase_gridlayout(self, layout):
         def add_button(*t):
             if not layout.get_parent_window():
