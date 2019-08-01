@@ -1,13 +1,9 @@
+#:import random random.random
+
 ShowcaseScreen:
     name: 'Splitter'
     fullscreen: True
+    on_parent: if args[1] : app.create_selector(fl)
 
-    RelativeLayout:
-        id: rl
-
-        Splitter:
-            sizable_from: 'right'
-            min_size: 10
-            max_size: rl.width
-            Button:
-                text: 'Panel'
+    FloatLayout:
+        id: fl

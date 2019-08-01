@@ -37,6 +37,12 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.label import Label
+from kivy.uix.dropdown import DropDown
+from kivy.uix.button import Button
+from kivy.base import runTouchApp
+from kivy.base import runTouchApp
+from kivy.uix.spinner import Spinner
+from kivy.uix.boxlayout import BoxLayout
 
 import requests
 import re
@@ -48,6 +54,24 @@ import binascii
 datas = []
 data_set = {}
 text_set = {}
+
+kit = []
+offset_x = [0.03, 0.55]
+offset_y = [ y*0.18-0.1 for y in range(5, 0, -1)]
+
+class CustomDropDown(DropDown):
+    def do(self, layout):
+        dropdown = CustomDropDown()
+        mainbutton = Button(text='Hello', size_hint=(None, None))
+        mainbutton.bind(on_release=dropdown.open)
+        dropdown.bind(on_select=lambda instance, x: setattr(mainbutton, 'text', x))
+        #layout.add_widget(dropdown)
+
+class RootWidget(Screen):
+    def on_spinner_select(self, text):
+        print (text)
+    def do(self):
+        print("hello world")
 
 class ShowcaseScreen(Screen):
     fullscreen = BooleanProperty(False)
@@ -68,12 +92,68 @@ class ShowcaseApp(App):
     screen_names = ListProperty([])
     hierarchy = ListProperty([])
 
+    def create_selector(self, layout):
+        request_spinner = Spinner(
+            text='<request>',
+            values=['POST', 'GET'],
+            size_hint=(None, None),
+            size=(100, 44),
+            pos_hint={'center_x': .08, 'center_y': .95}
+        )
+
+        parameter_spinner = Spinner(
+            text='<parameter>',
+            values=['URL', 'User Agent', 'Referer', 'cookie'],
+            size_hint=(None, None),
+            size=(100, 44),
+            pos_hint={'center_x': .23, 'center_y': 0.95}
+        )
+
+        crypto_spinner = Spinner(
+            text='<crypto>',
+            values=['URLEncode', 'e_base64', 'e_md5', 'e_hex', 'd_base64', 'd_hex'],
+            size_hint=(None, None),
+            size=(100, 44),
+            pos_hint={'center_x': .38, 'center_y': .95}
+        )
+
+        def show_kit(spinner, text):
+            global kit
+            if len(kit) > 10:
+                print("Too many!!")
+                return
+
+            print(len(kit))
+            pos_x = offset_x[len(kit)//5]
+            pos_y = offset_y[len(kit)%5]
+            if text == "POST" or text == "GET":
+                spinner.text = "<request>"    
+            elif text == "URL" or text == "User Agent" or text == "Referer" or text == "cookie":
+                gap = 0.25
+                L1 = Label(text = text, size_hint=(None, None), pos_hint={'center_x': pos_x, 'center_y': pos_y}, height=30, width=80)
+                T1 = TextInput(text='', multiline=True, size_hint=(None, None), pos_hint={'center_x': pos_x + gap, 'center_y': pos_y}, height=50, width=500)
+                layout.add_widget(L1)
+                layout.add_widget(T1)
+                kit.append([L1, T1])
+                spinner.text = "<parameter>"
+            elif text == "URLEncode" or text[0] == 'e' or text[0] == 'd':
+                spinner.text = "<crypto>"
+
+            
+
+        request_spinner.bind(text=show_kit)
+        parameter_spinner.bind(text=show_kit)
+        crypto_spinner.bind(text=show_kit)
+        layout.add_widget(request_spinner)
+        layout.add_widget(parameter_spinner)
+        layout.add_widget(crypto_spinner)
+
     def build(self):
         self.title = 'lighted hackbar'
         Clock.schedule_interval(self._update_clock, 1 / 60.)
         self.screens = {}
         self.available_screens = sorted([
-            'send packets', "Tutorial", "Encode"
+            'send packets', "Tutorial", "Encode", "Splitter"
         ])
         self.screen_names = self.available_screens
         curdir = dirname(__file__)
@@ -304,11 +384,11 @@ class ShowcaseApp(App):
     
     def search_source_code(self, layout):
         def search(self):
-            #try:
-            code = requests.get(URL.text, timeout=5).text
-            print(code)
-            #except:
-             #   print("Invlid URL")
+            try:
+                code = requests.get(URL.text, timeout=5).text()
+                print(code)
+            except:
+                print("Invlid URL")
 
         confirm = Button(size_hint=(None, None), x=320, y=200, width=100, height=33, text='search')
         confirm.bind(on_press=search)
