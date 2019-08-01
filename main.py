@@ -40,7 +40,7 @@ from kivy.uix.label import Label
 
 import requests
 import re
-import urllib.parse
+import urllib
 import base64
 import hashlib
 import binascii
@@ -261,46 +261,27 @@ class ShowcaseApp(App):
         postData = Button(size_hint=(None, None),x=60,y=230,height=40,width=80,text='Post')
         layout.add_widget(postData)
         postData.bind(on_press=getPostData)
+    
+    def do_url_encode(self, input, answer_label):
+        answer = urllib.parse.quote(input.text)
+        answer_label.text = str(answer)
 
+    def do_base64encode(self, input, answer_label):            
+        answer = base64.b64encode(bytes(input.text, 'utf-8'))
+        answer_label.text = answer.decode('utf-8')
+        
+    def do_md5encode(self, input, answer_label):
+        m = hashlib.md5()
+        m.update(bytes(input.text, 'utf-8'))
+        answer = m.hexdigest()
+        answer_label.text = str(answer)
 
-    def show_webencoding_method(self, layout):
-        def urlencode(self):
-            URLEncode.text = urllib.parse.quote(URLEncode.text)
-
-        urlconfirm = Button(size_hint=(None, None), x=60, y=433, width=100, height=33, text='URLEncode')
-        urlconfirm.bind(on_press=urlencode)
-        layout.add_widget(urlconfirm)
-        URLEncode = TextInput(text='', multiline=False, x = 180, y=435,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(URLEncode)
-
-    def show_encoding_method(self, layout):
-        def base64encode(self):            
-            base64text.text = base64.b64encode(bytes(base64text.text, 'utf-8'))
-        def md5encode(self):
-            m = hashlib.md5()
-            m.update(bytes(md5text.text, 'utf-8'))
-            md5text.text = m.hexdigest()
-        def hexencode(self):
-            try:
-                hextext.text = binascii.hexlify(bytes(hextext.text, 'utf-8'))
-            except:
-                print("[hex] Invalid input")
-
-        base64confirm = Button(size_hint=(None, None), x=60, y=433, width=100, height=33, text='base64')
-        base64confirm.bind(on_press=base64encode)
-        layout.add_widget(base64confirm)
-        base64text = TextInput(text='', multiline=False, x = 180, y=435,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(base64text)
-        md5confirm = Button(size_hint=(None, None), x=60, y=383, width=100, height=33, text='md5')
-        md5confirm.bind(on_press=md5encode)
-        layout.add_widget(md5confirm)
-        md5text = TextInput(text='', multiline=False, x = 180, y=385,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(md5text)
-        hexconfirm = Button(size_hint=(None, None), x=60, y=333, width=100, height=33, text='hex')
-        hexconfirm.bind(on_press=hexencode)
-        layout.add_widget(hexconfirm)
-        hextext = TextInput(text='', multiline=False, x = 180, y=335,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(hextext)
+    def do_hexencode(self, input, answer_label):
+        try:
+            answer = binascii.hexlify(bytes(input.text, 'utf-8'))
+            answer_label.text = answer.decode('utf-8')
+        except:
+            print("[hex] Invalid input")
     
     def search_source_code(self, layout):
         def search(self):
@@ -316,34 +297,22 @@ class ShowcaseApp(App):
         URL = TextInput(text='', multiline=False, x = 140, y=255,size_hint=(None, None), height=30, width=500)
         layout.add_widget(URL)
 
-    def show_decoding_method(self, layout):
-        def base64decode(self):            
-            base64text.text = base64.b64decode(bytes(base64text.text, 'utf-8'))
-        def md5decode(self):
-            m = hashlib.md5()
-            m.update(bytes(md5text.text, 'utf-8'))
-            md5text.text = m.hexdigest()
-        def hexdecode(self):
-            try:
-                hextext.text = binascii.unhexlify(bytes(hextext.text, 'utf-8'))
-            except:
-                print("[hex] Invalid input")
+    def do_base64decode(self, input, answer_label):            
+        answer = base64.b64decode(bytes(input.text, 'utf-8'))
+        answer_label.text = answer.decode('utf-8')
 
-        base64confirm = Button(size_hint=(None, None), x=60, y=433, width=100, height=33, text='base64')
-        base64confirm.bind(on_press=base64decode)
-        layout.add_widget(base64confirm)
-        base64text = TextInput(text='', multiline=False, x = 180, y=435,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(base64text)
-        md5confirm = Button(size_hint=(None, None), x=60, y=383, width=100, height=33, text='md5')
-        md5confirm.bind(on_press=md5decode)
-        layout.add_widget(md5confirm)
-        md5text = TextInput(text='', multiline=False, x = 180, y=385,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(md5text)
-        hexconfirm = Button(size_hint=(None, None), x=60, y=333, width=100, height=33, text='hex')
-        hexconfirm.bind(on_press=hexdecode)
-        layout.add_widget(hexconfirm)
-        hextext = TextInput(text='', multiline=False, x = 180, y=335,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(hextext)
+    def do_md5decode(self, input, answer_label):
+        m = hashlib.md5()
+        m.update(bytes(input.text, 'utf-8'))
+        answer = m.hexdigest()
+        answer_label.text = str(answer)
+
+    def do_hexdecode(self, input, answer_label):
+        try:
+            answer = binascii.unhexlify(bytes(input.text, 'utf-8'))
+            answer_label.text = answer.decode('utf-8')
+        except:
+            print("[hex] Invalid input")
 
     def showcase_gridlayout(self, layout):
         def add_button(*t):

@@ -1,9 +1,9 @@
-#:import random random.random
+#:kivy 1.8.0
 
 ShowcaseScreen:
     name: 'Encode'
     fullscreen: True
-    on_parent: if args[1] and tp.current_tab == tab_fl: app.show_webencoding_method(fl)
+    #on_parent: if args[1] and tp.current_tab == tab_fl: app.show_webencoding_method(fl)
 
     TabbedPanel:
         id: tp
@@ -12,27 +12,87 @@ ShowcaseScreen:
         TabbedPanelItem:
             id: tab_fl
             text: 'URL'
-            on_release: app.show_webencoding_method(fl)
-            FloatLayout:
-                CFloatLayout:
-                    id: fl
-
+            RelativeLayout:
+                CBoxLayout:
+                    orientation: 'vertical'
+                    padding: (100, 100)
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        Tab1Button:
+                            text: 'URL Encode'
+                            on_press: app.do_url_encode(url_encode_input, url_encode_answer)
+                        Tab1TextInput:
+                            id: url_encode_input
+                    Label:
+                        id: url_encode_answer
+                        text: 'Answer'
+                        font_size: 48
                 
         TabbedPanelItem:
             id: tab_box
             text: 'ENCRYPT'
-            on_release: app.show_encoding_method(crypto)
-            FloatLayout:
-                CFloatLayout:
-                    id: crypto
+            RelativeLayout:
+                CBoxLayout:
+                    orientation: 'vertical'
+                    padding: (100, 100)
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        Tab2Button:
+                            text: 'Base64'
+                            on_press: app.do_base64encode(base64_encode_input, encode_answer)
+                        Tab2TextInput:
+                            id: base64_encode_input
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        Tab2Button:
+                            text: 'MD5'
+                            on_press: app.do_md5encode(md5_encode_input, encode_answer)
+                        Tab2TextInput:
+                            id: md5_encode_input
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        Tab2Button:
+                            text: 'HEX'
+                            on_press: app.do_hexencode(hex_encode_input, encode_answer)
+                        Tab2TextInput:
+                            id: hex_encode_input
+                    Label:
+                        id: encode_answer
+                        text: 'Answer'
+                        font_size: 48
         
         TabbedPanelItem:
             id: tab_dec
             text: 'DECRYPT'
-            on_release: app.show_decoding_method(decrypt)
-            FloatLayout:
-                CFloatLayout:
-                    id: decrypt
+            RelativeLayout:
+                CBoxLayout:
+                    orientation: 'vertical'
+                    padding: (100, 100)
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        Tab3Button:
+                            text: 'Base64'
+                            on_press: app.do_base64decode(base64_decode_input, decode_answer)
+                        Tab3TextInput:
+                            id: base64_decode_input
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        Tab3Button:
+                            text: 'MD5'
+                            on_press: app.do_md5decode(md5_decode_input, decode_answer)
+                        Tab3TextInput:
+                            id: md5_decode_input
+                    BoxLayout:
+                        orientation: 'horizontal'
+                        Tab3Button:
+                            text: 'HEX'
+                            on_press: app.do_hexdecode(hex_decode_input, decode_answer)
+                        Tab3TextInput:
+                            id: hex_decode_input
+                    Label:
+                        id: decode_answer
+                        text: 'Answer'
+                        font_size: 48
 
 <CFloatLayout@FloatLayout+BackgroundColor>
 <CBoxLayout@BoxLayout+BackgroundColor>
@@ -50,3 +110,27 @@ ShowcaseScreen:
         Rectangle:
             size: self.size
             pos: self.pos
+<Tab1Button@Button>
+    pos_hint: {'center_x': .7, 'center_y': .7}
+    size_hint: (0.15, 0.2)
+<Tab1TextInput@TextInput>
+    pos_hint: {'center_x': .7, 'center_y': .7}
+    size_hint:(0.6, 0.2)
+    font_size: 48
+    multiline: False
+<Tab2Button@Button>
+    pos_hint: {'center_x': .7, 'center_y': .7}
+    size_hint: (0.15, 0.4)
+<Tab2TextInput@TextInput>
+    pos_hint: {'center_x': .7, 'center_y': .7}
+    size_hint:(0.6, 0.4)
+    font_size: 48
+    multiline: False
+<Tab3Button@Button>
+    pos_hint: {'center_x': .7, 'center_y': .7}
+    size_hint: (0.15, 0.4)
+<Tab3TextInput@TextInput>
+    pos_hint: {'center_x': .7, 'center_y': .7}
+    size_hint:(0.6, 0.4)
+    font_size: 48
+    multiline: False
