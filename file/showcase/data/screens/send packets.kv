@@ -1,0 +1,90 @@
+#:import random random.random
+
+ShowcaseScreen:
+    name: 'send packets'
+    fullscreen: True
+    on_parent: if args[1] and tp.current_tab == tab_fl: app.showcase_floatlayout(fl)
+
+    TabbedPanel:
+        id: tp
+        do_default_tab: False
+
+        TabbedPanelItem:
+            id: tab_fl
+            text: 'GET'
+            on_release: app.showcase_floatlayout(fl)
+            FloatLayout:
+                CFloatLayout:
+                    id: fl
+                Label
+                    size_hint: (None, None)
+                    x: 50
+                    y: 400
+                    text: 'URL'
+
+                Label
+                    size_hint: (None, None)
+                    x: 50
+                    y: 350
+                    text: 'User Agent'
+                
+                Label
+                    size_hint: (None, None)
+                    x: 50
+                    y: 300
+                    text: 'Referer'
+                
+                Label
+                    size_hint: (None, None)
+                    x: 50
+                    y: 250
+                    text: 'cookie'
+                
+        TabbedPanelItem:
+            id: tab_box
+            text: 'POST'
+            on_release: app.showcase_boxlayout(box)
+            FloatLayout:
+                CFloatLayout:
+                    id: box
+                Label
+                    size_hint: (None, None)
+                    x: 50
+                    y: 400
+                    text: 'URL'
+
+                Label
+                    size_hint: (None, None)
+                    x: 50
+                    y: 350
+                    text: 'User Agent'
+                
+                Label
+                    size_hint: (None, None)
+                    x: 50
+                    y: 300
+                    text: 'Referer'
+                
+                Label
+                    size_hint: (None, None)
+                    x: 50
+                    y: 250
+                    text: 'cookie'
+                
+
+<CFloatLayout@FloatLayout+BackgroundColor>
+<CBoxLayout@BoxLayout+BackgroundColor>
+<CGridLayout@GridLayout+BackgroundColor>
+<CStackLayout@StackLayout+BackgroundColor>
+<CAnchorLayout@AnchorLayout+BackgroundColor>
+
+
+<BackgroundColor@Widget>
+    pos_hint: {'center_x': .5, 'center_y': .5}
+    size_hint: .9, .9
+    canvas.before:
+        Color:
+            rgba: .2, .3, .4, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
