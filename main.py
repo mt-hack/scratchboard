@@ -228,12 +228,12 @@ class ShowcaseApp(App):
             if cookie.text:
                 headers_['cookies'] = cookie.text
 
-            print datas
+            print(datas)
             params = {}
             for i, d in enumerate(datas):
             	params[d] = text_set[i].text
 
-            print params
+            print(params)
 
             
             try:
@@ -262,7 +262,7 @@ class ShowcaseApp(App):
     def show_webencoding_method(self, layout):
         def urlencode(self):
             URLEncode.text = urllib.quote(URLEncode.text)
-            print type(URLEncode.text)
+            print(type(URLEncode.text))
 
         urlconfirm = Button(size_hint=(None, None), x=60, y=433, width=100, height=33, text='URLEncode')
         urlconfirm.bind(on_press=urlencode)
@@ -272,7 +272,7 @@ class ShowcaseApp(App):
 
     def show_encoding_method(self, layout):
         def base64encode(self):
-            print base64text.text
+            print(base64text.text)
             p = base64text.text.encode('base64')
             base64text.text = p
             
