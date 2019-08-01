@@ -3,8 +3,6 @@ A developer tool panel with different kinds of functions for testing web securit
 
 ## Functions
 
----
-
 ### Encoding Panel
 #### URL
 * URLEncode
