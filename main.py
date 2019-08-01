@@ -25,6 +25,8 @@ copy/paste this directory into /sdcard/kivy/showcase on your Android device.
 
 '''
 
+# encoding: utf-8
+
 from time import time
 from kivy.app import App
 from os.path import dirname, join
@@ -43,6 +45,7 @@ from kivy.base import runTouchApp
 from kivy.base import runTouchApp
 from kivy.uix.spinner import Spinner
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.slider import Slider
 
 import requests
 import re
@@ -103,7 +106,7 @@ class ShowcaseApp(App):
 
         parameter_spinner = Spinner(
             text='<parameter>',
-            values=['URL', 'User Agent', 'Referer', 'cookie'],
+            values=['URL', 'user-agent', 'Referer', 'cookie'],
             size_hint=(None, None),
             size=(100, 44),
             pos_hint={'center_x': .23, 'center_y': 0.95}
@@ -123,23 +126,78 @@ class ShowcaseApp(App):
                 print("Too many!!")
                 return
 
-            print(len(kit))
             pos_x = offset_x[len(kit)//5]
             pos_y = offset_y[len(kit)%5]
+            gap = 0.25
             if text == "POST" or text == "GET":
-                spinner.text = "<request>"    
-            elif text == "URL" or text == "User Agent" or text == "Referer" or text == "cookie":
-                gap = 0.25
+                L1 = Label(text = text, size_hint=(None, None), pos_hint={'center_x': pos_x, 'center_y': pos_y}, height=30, width=80)
+                T1 = TextInput(text='Response...', multiline=True, size_hint=(None, None), pos_hint={'center_x': pos_x + gap, 'center_y': pos_y}, height=100, width=500)
+                layout.add_widget(L1)
+                layout.add_widget(T1)
+                if len(kit) == 0:
+                    kit.append([L1, T1])
+                else:
+                    S1 = Slider(orientation='vertical', value=0, size_hint=(.15,.15), pos_hint={'center_x': pos_x + gap, 'center_y': pos_y+0.1})
+                    layout.add_widget(S1)
+                    kit.append([L1, T1, S1])
+
+                spinner.text = "<request>" 
+            elif text == "URL" or text == "user-agent" or text == "Referer" or text == "cookie":
                 L1 = Label(text = text, size_hint=(None, None), pos_hint={'center_x': pos_x, 'center_y': pos_y}, height=30, width=80)
                 T1 = TextInput(text='', multiline=True, size_hint=(None, None), pos_hint={'center_x': pos_x + gap, 'center_y': pos_y}, height=50, width=500)
                 layout.add_widget(L1)
                 layout.add_widget(T1)
-                kit.append([L1, T1])
+                if len(kit) == 0:
+                    kit.append([L1, T1])
+                else:
+                    S1 = Slider(orientation='vertical', value=0, size_hint=(.15,.15), pos_hint={'center_x': pos_x + gap, 'center_y': pos_y+0.1})
+                    layout.add_widget(S1)
+                    kit.append([L1, T1, S1])
+
                 spinner.text = "<parameter>"
             elif text == "URLEncode" or text[0] == 'e' or text[0] == 'd':
                 spinner.text = "<crypto>"
 
+        def remove_one(self):
+            global kit
+            if len(kit) == 0:
+                return
             
+            for widget in kit[-1]:
+                layout.remove_widget(widget)
+            kit.remove(kit[-1])
+
+        def start(self):
+            headers_ = {}
+            params = []
+            url = ""
+            for i in range(len(kit)):
+                if kit[i][0].text == 'POST' or kit[i][0].text == 'GET':
+                    #try:
+                    if kit[i][0].text[0] == 'P':
+                        r = requests.post(url, headers=headers_, data=params, timeout=5)
+                    else:
+                        r = requests.get(url, headers=headers_, timeout=5)
+
+                    r.encoding = 'utf-8'
+                    print(r.encoding)
+                    print(r.text)
+                    print(headers_)
+                    kit[i][1].text = bytes(r.text, 'utf-8')
+                    params = []
+                    headers_ = {}
+                    url = ""
+                    #except:
+                     #   print("Invalid argument")
+
+                elif kit[i][0].text == 'URL' or kit[i][0].text == "user-agent" or kit[i][0].text == "Referer" or kit[i][0].text == "cookie":
+                    if kit[i][0].text == "URL":
+                        url = kit[i][1].text
+                    else:
+                        headers_[kit[i][0].text] = kit[i][1].text
+
+                elif kit[i][0].text == "URLEncode" or kit[i][0].text[0] == 'e' or kit[i][0].text[0] == 'd':
+                    pass
 
         request_spinner.bind(text=show_kit)
         parameter_spinner.bind(text=show_kit)
@@ -147,6 +205,13 @@ class ShowcaseApp(App):
         layout.add_widget(request_spinner)
         layout.add_widget(parameter_spinner)
         layout.add_widget(crypto_spinner)
+
+        clear = Button(size_hint=(None, None), pos_hint={'center_x': 0.75, 'center_y': 0.95}, height=30, width=80, text='Clear')
+        clear.bind(on_press=remove_one)
+        layout.add_widget(clear)
+        test = Button(size_hint=(None, None), pos_hint={'center_x': 0.93, 'center_y': 0.95}, height=30, width=80, text='test')
+        test.bind(on_press=start)
+        layout.add_widget(test)
 
     def build(self):
         self.title = 'lighted hackbar'
