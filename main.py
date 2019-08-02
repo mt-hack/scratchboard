@@ -152,42 +152,48 @@ class ShowcaseApp(App):
         self.root.ids.sourcecode.text = self.read_sourcecode()
         self.root.ids.sv.scroll_y = 1
 
-    def showcase_floatlayout(self, layout):
-        def do_something(self):
-            print("sending......")
-            print(user_agent.text)
-            headers_ = {}
-            if user_agent.text:
-                headers_['user-agent'] = user_agent.text
-            if Referer.text:
-                headers_['Referer'] = Referer.text
-            if cookie.text:
-                headers_['cookies'] = cookie.text
-            
-            try:
-                print(headers_)
-                r = requests.get(URL.text, headers = headers_, timeout=5)
-                r.encoding = 'utf-8'
-                print(r.text)
-            except:
-                print("Invalid Parameters !")
+    def send_get_request(self, url, user_agent, referer, cookie, output):
+        print("sending......")
+        headers_ = {}
+        if user_agent.text:
+            headers_['user-agent'] = user_agent.text
+        if referer.text:
+            headers_['Referer'] = referer.text
+        if cookie.text:
+            headers_['cookies'] = cookie.text
+        try:
+            r = requests.get(url.text, headers = headers_, timeout=5)
+            r.encoding = 'utf-8'
+            output.foreground_color = (0, 0, 0, 1)
+            output.text = r.text
+        except:
+            print("Invalid Parameters !")
+            output.foreground_color = (1, 0, 0, 1)
+            output.text = "Invalid Parameters !"
         
-        URL = TextInput(text='', multiline=False, x = 150, y=435,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(URL)
-        user_agent = TextInput(text='', multiline=False, x = 150, y=385,size_hint=(None, None), height=30, width=300)
-        layout.add_widget(user_agent)
-        Referer = TextInput(text='', multiline=False, x = 150, y=335,size_hint=(None, None), height=30, width=300)
-        layout.add_widget(Referer)
-        cookie = TextInput(text='', multiline=False, x = 150, y=285,size_hint=(None, None), height=30, width=300)
-        layout.add_widget(cookie)
-        confirm = Button(size_hint=(None, None), x=650, y=50, height=30, width=80, text='send')
-        layout.add_widget(confirm)
-        confirm.bind(on_press=do_something)
-        
+    def send_post_request(self, url, user_agent, referer, cookie, output):
+        print("sending......")
+        headers_ = {}
+        params = {}
+        if user_agent.text:
+            headers_['user-agent'] = user_agent.text
+        if referer.text:
+            headers_['Referer'] = referer.text
+        if cookie.text:
+            headers_['cookies'] = cookie.text
+        try:
+            r = requests.post(URL.text, headers = headers_, data=params, timeout=5)
+            r.encoding = 'utf-8'
+            output.foreground_color = (0, 0, 0, 1)
+            output.text = r.text
+        except:
+            print("Invalid Parameters !")
+            output.foreground_color = (1, 0, 0, 1)
+            output.text = "Invalid Parameters !"
 
+    # Deprecated
     def showcase_boxlayout(self, layout):
         def getPostData(self):
-
             try:
                 global datas
                 datas = []
@@ -220,7 +226,6 @@ class ShowcaseApp(App):
                 layout.add_widget(text_set[i])
 
 
-
         def do_something(self):
             print("sending......")
             print(user_agent.text)
@@ -241,7 +246,7 @@ class ShowcaseApp(App):
 
             
             try:
-                r = requests.get(URL.text, headers = headers_, data=params, timeout=5)
+                r = requests.post(URL.text, headers = headers_, data=params, timeout=5)
                 r.encoding = 'utf-8'
                 print(r.text)
             except:
