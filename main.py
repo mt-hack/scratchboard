@@ -37,6 +37,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.label import Label
+from kivy.config import Config
 
 import requests
 import re
@@ -48,6 +49,10 @@ import binascii
 datas = []
 data_set = {}
 text_set = {}
+
+Config.set('graphics', 'resizable', True)
+Config.set('graphics', 'minimum_width', '700')
+Config.set('graphics', 'minimum_height', '600')
 
 class ShowcaseScreen(Screen):
     fullscreen = BooleanProperty(False)
