@@ -307,16 +307,9 @@ class ShowcaseApp(App):
         self.title = 'SCRATCHED BOARD'
         Clock.schedule_interval(self._update_clock, 1 / 60.)
         self.screens = {}
-<<<<<<< HEAD
         self.available_screens = [
-            "SCRATCH BOARD", 'send packets', "Note", "Encode"
+            "SCRATCH BOARD", 'send packets', "Note", "Encode", "Scratch"
         ]
-=======
-        self.available_screens = sorted([
-            'send packets', "Note", "Encode", "SCRATCH BOARD", "Scratch"
-        ])
-
->>>>>>> 11482330a070af0e3275f71eaa04781abe013907
         self.screen_names = self.available_screens
         curdir = dirname(__file__)
         self.available_screens = [join(curdir, 'data', 'screens',
