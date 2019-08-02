@@ -35,6 +35,7 @@ from kivy.properties import NumericProperty, StringProperty, BooleanProperty,\
     ListProperty
 from kivy.clock import Clock
 from kivy.animation import Animation
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
@@ -42,20 +43,21 @@ from kivy.uix.label import Label
 from kivy.uix.dropdown import DropDown
 from kivy.uix.button import Button
 from kivy.base import runTouchApp
-from kivy.base import runTouchApp
 from kivy.uix.spinner import Spinner
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.slider import Slider
 from kivy.core.window import Window
 
-Window.size = (1366, 768)
+from kivy.uix.behaviors import DragBehavior
+from kivy.config import Config
 
 import requests
 import re
-import urllib.parse
+import urllib
 import base64
 import hashlib
 import binascii
+Window.size = (1366, 768)
 
 datas = []
 data_set = {}
@@ -78,6 +80,16 @@ class RootWidget(Screen):
         print (text)
     def do(self):
         print("hello world")
+
+class Component(DragBehavior, BoxLayout):
+    pass
+
+#Config.set('graphics', 'width', '1280')
+#Config.set('graphics', 'height', '720')
+Config.set('graphics', 'resizable', True)
+Config.set('graphics', 'minimum_width', '700')
+Config.set('graphics', 'minimum_height', '600')
+
 
 class ShowcaseScreen(Screen):
     fullscreen = BooleanProperty(False)
@@ -295,9 +307,16 @@ class ShowcaseApp(App):
         self.title = 'SCRATCHED BOARD'
         Clock.schedule_interval(self._update_clock, 1 / 60.)
         self.screens = {}
+<<<<<<< HEAD
         self.available_screens = [
             "SCRATCH BOARD", 'send packets', "Note", "Encode"
         ]
+=======
+        self.available_screens = sorted([
+            'send packets', "Note", "Encode", "SCRATCH BOARD", "Scratch"
+        ])
+
+>>>>>>> 11482330a070af0e3275f71eaa04781abe013907
         self.screen_names = self.available_screens
         curdir = dirname(__file__)
         self.available_screens = [join(curdir, 'data', 'screens',
@@ -375,42 +394,48 @@ class ShowcaseApp(App):
         self.root.ids.sourcecode.text = self.read_sourcecode()
         self.root.ids.sv.scroll_y = 1
 
-    def showcase_floatlayout(self, layout):
-        def do_something(self):
-            print("sending......")
-            print(user_agent.text)
-            headers_ = {}
-            if user_agent.text:
-                headers_['user-agent'] = user_agent.text
-            if Referer.text:
-                headers_['Referer'] = Referer.text
-            if cookie.text:
-                headers_['cookies'] = cookie.text
-            
-            try:
-                print(headers_)
-                r = requests.get(URL.text, headers = headers_, timeout=5)
-                r.encoding = 'utf-8'
-                print(r.text)
-            except:
-                print("Invalid Parameters !")
+    def send_get_request(self, url, user_agent, referer, cookie, output):
+        print("sending......")
+        headers_ = {}
+        if user_agent.text:
+            headers_['user-agent'] = user_agent.text
+        if referer.text:
+            headers_['Referer'] = referer.text
+        if cookie.text:
+            headers_['cookies'] = cookie.text
+        try:
+            r = requests.get(url.text, headers = headers_, timeout=5)
+            r.encoding = 'utf-8'
+            output.foreground_color = (0, 0, 0, 1)
+            output.text = r.text
+        except:
+            print("Invalid Parameters !")
+            output.foreground_color = (1, 0, 0, 1)
+            output.text = "Invalid Parameters !"
         
-        URL = TextInput(text='', multiline=False, x = 150, y=435,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(URL)
-        user_agent = TextInput(text='', multiline=False, x = 150, y=385,size_hint=(None, None), height=30, width=300)
-        layout.add_widget(user_agent)
-        Referer = TextInput(text='', multiline=False, x = 150, y=335,size_hint=(None, None), height=30, width=300)
-        layout.add_widget(Referer)
-        cookie = TextInput(text='', multiline=False, x = 150, y=285,size_hint=(None, None), height=30, width=300)
-        layout.add_widget(cookie)
-        confirm = Button(size_hint=(None, None), x=650, y=50, height=30, width=80, text='send')
-        layout.add_widget(confirm)
-        confirm.bind(on_press=do_something)
-        
+    def send_post_request(self, url, user_agent, referer, cookie, output):
+        print("sending......")
+        headers_ = {}
+        params = {}
+        if user_agent.text:
+            headers_['user-agent'] = user_agent.text
+        if referer.text:
+            headers_['Referer'] = referer.text
+        if cookie.text:
+            headers_['cookies'] = cookie.text
+        try:
+            r = requests.post(URL.text, headers = headers_, data=params, timeout=5)
+            r.encoding = 'utf-8'
+            output.foreground_color = (0, 0, 0, 1)
+            output.text = r.text
+        except:
+            print("Invalid Parameters !")
+            output.foreground_color = (1, 0, 0, 1)
+            output.text = "Invalid Parameters !"
 
+    # Deprecated
     def showcase_boxlayout(self, layout):
         def getPostData(self):
-
             try:
                 global datas
                 datas = []
@@ -443,7 +468,6 @@ class ShowcaseApp(App):
                 layout.add_widget(text_set[i])
 
 
-
         def do_something(self):
             print("sending......")
             print(user_agent.text)
@@ -464,7 +488,7 @@ class ShowcaseApp(App):
 
             
             try:
-                r = requests.get(URL.text, headers = headers_, data=params, timeout=5)
+                r = requests.post(URL.text, headers = headers_, data=params, timeout=5)
                 r.encoding = 'utf-8'
                 print(r.text)
             except:
@@ -484,46 +508,27 @@ class ShowcaseApp(App):
         postData = Button(size_hint=(None, None),x=60,y=230,height=40,width=80,text='Post')
         layout.add_widget(postData)
         postData.bind(on_press=getPostData)
+    
+    def do_url_encode(self, input, answer_label):
+        answer = urllib.parse.quote(input.text)
+        answer_label.text = str(answer)
 
+    def do_base64encode(self, input, answer_label):            
+        answer = base64.b64encode(bytes(input.text, 'utf-8'))
+        answer_label.text = answer.decode('utf-8')
+        
+    def do_md5encode(self, input, answer_label):
+        m = hashlib.md5()
+        m.update(bytes(input.text, 'utf-8'))
+        answer = m.hexdigest()
+        answer_label.text = str(answer)
 
-    def show_webencoding_method(self, layout):
-        def urlencode(self):
-            URLEncode.text = urllib.parse.quote(URLEncode.text)
-
-        urlconfirm = Button(size_hint=(None, None), x=60, y=433, width=100, height=33, text='URLEncode')
-        urlconfirm.bind(on_press=urlencode)
-        layout.add_widget(urlconfirm)
-        URLEncode = TextInput(text='', multiline=False, x = 180, y=435,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(URLEncode)
-
-    def show_encoding_method(self, layout):
-        def base64encode(self):            
-            base64text.text = base64.b64encode(bytes(base64text.text, 'utf-8'))
-        def md5encode(self):
-            m = hashlib.md5()
-            m.update(bytes(md5text.text, 'utf-8'))
-            md5text.text = m.hexdigest()
-        def hexencode(self):
-            try:
-                hextext.text = binascii.hexlify(bytes(hextext.text, 'utf-8'))
-            except:
-                print("[hex] Invalid input")
-
-        base64confirm = Button(size_hint=(None, None), x=60, y=433, width=100, height=33, text='base64')
-        base64confirm.bind(on_press=base64encode)
-        layout.add_widget(base64confirm)
-        base64text = TextInput(text='', multiline=False, x = 180, y=435,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(base64text)
-        md5confirm = Button(size_hint=(None, None), x=60, y=383, width=100, height=33, text='md5')
-        md5confirm.bind(on_press=md5encode)
-        layout.add_widget(md5confirm)
-        md5text = TextInput(text='', multiline=False, x = 180, y=385,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(md5text)
-        hexconfirm = Button(size_hint=(None, None), x=60, y=333, width=100, height=33, text='hex')
-        hexconfirm.bind(on_press=hexencode)
-        layout.add_widget(hexconfirm)
-        hextext = TextInput(text='', multiline=False, x = 180, y=335,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(hextext)
+    def do_hexencode(self, input, answer_label):
+        try:
+            answer = binascii.hexlify(bytes(input.text, 'utf-8'))
+            answer_label.text = answer.decode('utf-8')
+        except:
+            print("[hex] Invalid input")
     
     def search_source_code(self, layout):
         def search(self):
@@ -539,35 +544,28 @@ class ShowcaseApp(App):
         URL = TextInput(text='', multiline=False, x = 140, y=255,size_hint=(None, None), height=30, width=500)
         layout.add_widget(URL)
 
-    def show_decoding_method(self, layout):
-        def base64decode(self):            
-            base64text.text = base64.b64decode(bytes(base64text.text, 'utf-8'))
-        def md5decode(self):
-            m = hashlib.md5()
-            m.update(bytes(md5text.text, 'utf-8'))
-            md5text.text = m.hexdigest()
-        def hexdecode(self):
-            try:
-                hextext.text = binascii.unhexlify(bytes(hextext.text, 'utf-8'))
-            except:
-                print("[hex] Invalid input")
+    def do_base64decode(self, input, answer_label):
+        try:        
+            answer = base64.b64decode(bytes(input.text, 'utf-8'))
+            answer = answer.decode('utf-8')
+        except:
+            answer = "Invalid Input!!!"
+        answer_label.text = answer
 
-        base64confirm = Button(size_hint=(None, None), x=60, y=433, width=100, height=33, text='base64')
-        base64confirm.bind(on_press=base64decode)
-        layout.add_widget(base64confirm)
-        base64text = TextInput(text='', multiline=False, x = 180, y=435,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(base64text)
-        md5confirm = Button(size_hint=(None, None), x=60, y=383, width=100, height=33, text='md5')
-        md5confirm.bind(on_press=md5decode)
-        layout.add_widget(md5confirm)
-        md5text = TextInput(text='', multiline=False, x = 180, y=385,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(md5text)
-        hexconfirm = Button(size_hint=(None, None), x=60, y=333, width=100, height=33, text='hex')
-        hexconfirm.bind(on_press=hexdecode)
-        layout.add_widget(hexconfirm)
-        hextext = TextInput(text='', multiline=False, x = 180, y=335,size_hint=(None, None), height=30, width=500)
-        layout.add_widget(hextext)
+    def do_md5decode(self, input, answer_label):
+        m = hashlib.md5()
+        m.update(bytes(input.text, 'utf-8'))
+        answer = m.hexdigest()
+        answer_label.text = str(answer)
 
+    def do_hexdecode(self, input, answer_label):
+        try:
+            answer = binascii.unhexlify(bytes(input.text, 'utf-8'))
+            answer = answer.decode('utf-8')
+        except:
+            answer = "Invalid Input!!!"
+            print("[hex] Invalid input")
+        answer_label.text = answer
     def showcase_gridlayout(self, layout):
         def add_button(*t):
             if not layout.get_parent_window():

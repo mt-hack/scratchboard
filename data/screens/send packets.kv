@@ -1,9 +1,9 @@
-#:import random random.random
+#:kivy 1.8.0
 
 ShowcaseScreen:
     name: 'send packets'
     fullscreen: True
-    on_parent: if args[1] and tp.current_tab == tab_fl: app.showcase_floatlayout(fl)
+    #on_parent: if args[1] and tp.current_tab == tab_fl: app.showcase_floatlayout(fl)
 
     TabbedPanel:
         id: tp
@@ -12,63 +12,94 @@ ShowcaseScreen:
         TabbedPanelItem:
             id: tab_fl
             text: 'GET'
-            on_release: app.showcase_floatlayout(fl)
-            FloatLayout:
-                CFloatLayout:
-                    id: fl
-                Label
-                    size_hint: (None, None)
-                    pos_hint: {'right': 0.2, 'top': 1}
-                    text: 'URL'
-
-                Label
-                    size_hint: (None, None)
-                    x: 50
-                    y: 350
-                    text: 'User Agent'
-                
-                Label
-                    size_hint: (None, None)
-                    x: 50
-                    y: 300
-                    text: 'Referer'
-                
-                Label
-                    size_hint: (None, None)
-                    x: 50
-                    y: 250
-                    text: 'cookie'
+            RelativeLayout:
+                CBoxLayout:
+                    orientation: 'vertical'
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint: (1, 0.6)
+                        padding: (50, 50)
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            CLabel
+                                text: 'URL'
+                            CTextInput
+                                id: get_url_input
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            CLabel
+                                text: 'User Agent'
+                            CTextInput
+                                id: get_useragent_input
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            CLabel
+                                text: 'Referer'
+                            CTextInput
+                                id: get_referer_input
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            CLabel
+                                text: 'cookie'
+                            CTextInput
+                                id: get_cookie_input
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            Button:
+                                size_hint: (0.6, 0.6)
+                                text: 'Send'
+                                on_press: app.send_get_request(get_url_input, get_useragent_input, get_referer_input, get_cookie_input, get_result)
+                    BoxLayout:
+                        size_hint: (1, 0.4)
+                        TextInput:
+                            id: get_result
+                            readonly: True
                 
         TabbedPanelItem:
             id: tab_box
             text: 'POST'
-            on_release: app.showcase_boxlayout(box)
-            FloatLayout:
-                CFloatLayout:
-                    id: box
-                Label
-                    size_hint: (None, None)
-                    x: 50
-                    y: 400
-                    text: 'URL'
-
-                Label
-                    size_hint: (None, None)
-                    x: 50
-                    y: 350
-                    text: 'User Agent'
-                
-                Label
-                    size_hint: (None, None)
-                    x: 50
-                    y: 300
-                    text: 'Referer'
-                
-                Label
-                    size_hint: (None, None)
-                    x: 50
-                    y: 250
-                    text: 'cookie'
+            RelativeLayout:
+                CBoxLayout:
+                    orientation: 'vertical'
+                    BoxLayout:
+                        orientation: 'vertical'
+                        size_hint: (1, 0.6)
+                        padding: (50, 50)
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            CLabel
+                                text: 'URL'
+                            CTextInput
+                                id: post_url_input
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            CLabel
+                                text: 'User Agent'
+                            CTextInput
+                                id: post_useragent_input
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            CLabel
+                                text: 'Referer'
+                            CTextInput
+                                id: post_referer_input
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            CLabel
+                                text: 'cookie'
+                            CTextInput
+                                id: post_cookie_input
+                        BoxLayout:
+                            orientation: 'horizontal'
+                            Button:
+                                size_hint: (0.6, 0.6)
+                                text: 'Send'
+                                on_press: app.send_post_request(post_url_input, post_useragent_input, post_referer_input, post_cookie_input, post_result)
+                    BoxLayout:
+                        size_hint: (1, 0.4)
+                        TextInput:
+                            id: post_result
+                            readonly: True
                 
 
 <CFloatLayout@FloatLayout+BackgroundColor>
@@ -87,3 +118,8 @@ ShowcaseScreen:
         Rectangle:
             size: self.size
             pos: self.pos
+<CLabel@Label>
+    size_hint: (0.2, 0.6)
+<CTextInput@TextInput>
+    size_hint: (0.6, 0.6)
+    multiline: False
