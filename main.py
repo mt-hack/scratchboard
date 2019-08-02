@@ -52,11 +52,14 @@ datas = []
 data_set = {}
 text_set = {}
 
-Config.set('graphics', 'width', '1280')
-Config.set('graphics', 'height', '720')
-
 class Component(DragBehavior, BoxLayout):
     pass
+
+#Config.set('graphics', 'width', '1280')
+#Config.set('graphics', 'height', '720')
+Config.set('graphics', 'resizable', True)
+Config.set('graphics', 'minimum_width', '700')
+Config.set('graphics', 'minimum_height', '600')
 
 class ShowcaseScreen(Screen):
     fullscreen = BooleanProperty(False)
