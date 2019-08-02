@@ -24,11 +24,15 @@ ShowcaseScreen:
             BoxLayout:
                 padding: (0, 10)
                 size_hint: (1.0, 0.3)
-                Component
+                BodyComponent
             BoxLayout:
                 padding: (0, 10)
-                size_hint: (1.0, 0.5)
-                Component
+                size_hint: (1.0, 0.2)
+                TestComponent
+            BoxLayout:
+                padding: (0, 10)
+                size_hint: (1.0, 0.2)
+                RequestComponent
 
 
 #<CStackLayout@StackLayout+BackgroundColor>
@@ -66,54 +70,136 @@ ShowcaseScreen:
     multiline: False
 
 <TargetComponent@Component>
+    canvas.before:
+        Color:
+            rgba: .22, .22, .22, 1
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [20]
     BoxLayout:
         orientation: 'vertical'
         BoxLayout:
-            size_hint: (0.25, 0.3)
+            size_hint: (0.23, 0.3)
             Label:
                 text: 'Target'
                 size_hint: (0.35, 0.7)
-                
-        AnchorLayout:
-            anchor_x: 'center'
-            anchor_y: 'bottom'
-            padding: [0, 0, 0, 20]
+        BoxLayout:
+            size_hint: (1, 0.4)
+            padding: [40, 20, 40, 40]
             TextInput:
                 hint_text: 'Target site'
-                size_hint: (0.8, 0.35)
-
 
 <ParameterComponent@Component>
+    canvas.before:
+        Color:
+            rgba: .36, .36, .36, 1
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [20]
     BoxLayout:
         orientation: 'vertical'
         BoxLayout:
-            size_hint: (0.4, 0.3)
+            size_hint: (0.3, 0.2)
             Label:
                 text: 'Parameter'
                 size_hint: (0.35, 0.7)
         BoxLayout:
-            size_hint: (1.0, 0.7)
+            size_hint: (1.0, 0.4)
             orientation: 'vertical'
-            padding: [20]
+            padding: [40, 20, 40, 40]
             TextInput:
                 hint_text: 'Type'
-                size_hint: (0.8, 0.3)
+                #size_hint: (0.8, 0.3)
             TextInput:
                 hint_text: 'query'
-                size_hint: (0.8, 0.3)
+                #size_hint: (0.8, 0.3)
+
+<BodyComponent@Component>
+    canvas.before:
+        Color:
+            rgba: .49, .49, .49, 1
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [20]
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            size_hint: (0.2, 0.1)
+            Label:
+                text: 'Body'
+                size_hint: (0.25, 0.5)
+        BoxLayout:
+            size_hint: (1.0, 0.4)
+            orientation: 'vertical'
+            padding: [40, 20, 40, 40]
+            BoxLayout:
+                size_hint: (1.0, 0.3)
+                Spinner:
+                    text_autoupdate: True
+                    values: 'form-data', 'json', 'xml', 'x-www-form-urlencoded'
+            BoxLayout:
+                padding: [0, 10, 0, 0]
+                orientation: 'horizontal'
+                size_hint: (1.0, 0.4)
+                TextInput:
+                    hint_text: 'Key'
+                    #size_hint: (0.8, 0.3)
+                TextInput:
+                    hint_text: 'Value'
+                    #size_hint: (0.8, 0.3)
+
+<TestComponent@Component>
+    canvas.before:
+        Color:
+            rgba: .70, .32, .32, 1
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [20]
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            size_hint: (0.27, 0.3)
+            Label:
+                text: 'Test for...'
+                size_hint: (0.35, 0.7)
+        BoxLayout:
+            size_hint: (1, 0.4)
+            padding: [40, 20, 40, 40]
+            Spinner:
+                text_autoupdate: True
+                values: 'XSS (Simple)', 'XSS', 'SQLi (Simple)', 'SQLi'
+
+<RequestComponent@Component>
+    canvas.before:
+        Color:
+            rgba: .69, .70, .34, 1
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [20]
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            size_hint: (0.35, 0.3)
+            Label:
+                text: 'HTTP Request'
+                size_hint: (0.35, 0.7)
+        BoxLayout:
+            size_hint: (1, 0.4)
+            padding: [40, 20, 40, 40]
+            Spinner:
+                text_autoupdate: True
+                values: 'GET', 'POST', 'PUT', 'HEAD', 'DELETE', 'OPTIONS'
 
 <Component>:
     drag_rectangle: self.x, self.y, self.width, self.height
     drag_timeout: 10000000
     drag_distance: 0
     pos_hint: {'center_x': .5, 'center_y': .5}
-    canvas.before:
-        Color:
-            rgba: .1, .1, .1, 1
-        RoundedRectangle:
-            size: self.size
-            pos: self.pos
-            radius: [20]
 
 #canvas.before:
 #    Color:
