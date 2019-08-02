@@ -46,6 +46,9 @@ from kivy.base import runTouchApp
 from kivy.uix.spinner import Spinner
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.slider import Slider
+from kivy.core.window import Window
+
+Window.size = (1366, 768)
 
 import requests
 import re
@@ -114,7 +117,7 @@ class ShowcaseApp(App):
 
         crypto_spinner = Spinner(
             text='<crypto>',
-            values=['URLEncode', 'e_base64', 'e_md5', 'e_hex', 'd_base64', 'd_hex'],
+            values=['URLEncode', 'e_base64', 'e_md5', 'e_hex', 'URLDecode', 'd_base64', 'd_hex'],
             size_hint=(None, None),
             size=(100, 44),
             pos_hint={'center_x': .38, 'center_y': .95}
@@ -171,7 +174,7 @@ class ShowcaseApp(App):
             elif text == "URL" or text == "user-agent" or text == "Referer" or text == "cookie":
                 B1 = Button(text = text, size_hint=(None, None), pos_hint={'center_x': pos_x, 'center_y': pos_y}, height=30, width=80)
                 B1.bind(on_press=visible)
-                T1 = TextInput(text='', multiline=True, size_hint=(None, None), pos_hint={'center_x': pos_x + gap, 'center_y': pos_y}, height=50, width=500,background_color=[0,0,0,0], foreground_color=[0,0,0,0])
+                T1 = TextInput(text='', multiline=True, size_hint=(None, None), pos_hint={'center_x': pos_x + gap, 'center_y': pos_y}, height=100, width=500,background_color=[0,0,0,0], foreground_color=[0,0,0,0])
                 layout.add_widget(B1)
                 layout.add_widget(T1)
                 if len(kit) == 0:
@@ -190,10 +193,10 @@ class ShowcaseApp(App):
                         kit.append([B1, T1, S1, S2])
 
                 spinner.text = "<parameter>"
-            elif text == "URLEncode" or text[0] == 'e' or text[0] == 'd':
+            elif text == "URLEncode" or text == "URLDecode" or text[0] == 'e' or text[0] == 'd':
                 B1 = Button(text = text, size_hint=(None, None), pos_hint={'center_x': pos_x, 'center_y': pos_y}, height=30, width=80)
                 B1.bind(on_press=visible)
-                T1 = TextInput(text='', multiline=True, size_hint=(None, None), pos_hint={'center_x': pos_x + gap, 'center_y': pos_y}, height=50, width=500,background_color=[0,0,0,0], foreground_color=[0,0,0,0])
+                T1 = TextInput(text='', multiline=True, size_hint=(None, None), pos_hint={'center_x': pos_x + gap, 'center_y': pos_y}, height=100, width=500,background_color=[0,0,0,0], foreground_color=[0,0,0,0])
                 layout.add_widget(B1)
                 layout.add_widget(T1)
                 if len(kit) == 0:
@@ -226,7 +229,9 @@ class ShowcaseApp(App):
             headers_ = {}
             params = []
             url = ""
+            output = ""
             for i in range(len(kit)):
+                input = kit[i][1].text if kit[i][1].text != "" else output
                 if kit[i][0].text == 'POST' or kit[i][0].text == 'GET':
                     try:
                         if kit[i][0].text[0] == 'P':
@@ -251,8 +256,26 @@ class ShowcaseApp(App):
                     else:
                         headers_[kit[i][0].text] = kit[i][1].text
 
-                elif kit[i][0].text == "URLEncode" or kit[i][0].text[0] == 'e' or kit[i][0].text[0] == 'd':
-                    pass
+                elif kit[i][0].text == "URLEncode" or kit[i][0].text == "URLDecode" or kit[i][0].text[0] == 'e' or kit[i][0].text[0] == 'd':
+                    if kit[i][0].text == "URLEncode":
+                        kit[i][1].text = urllib.parse.quote(input)
+                    elif kit[i][0].text == "URLDecode":
+                        kit[i][1].text = urllib.parse.unquote(input)
+                    elif kit[i][0].text == 'e_base64':
+                        kit[i][1].text = base64.b64encode(bytes(input, 'utf-8'))
+                    elif kit[i][0].text == 'e_md5':
+                        m = hashlib.md5()
+                        m.update(bytes(input, 'utf-8'))
+                        kit[i][1].text = m.hexdigest()
+                    elif kit[i][0].text == 'e_hex':
+                        kit[i][1].text = binascii.hexlify(bytes(input, 'utf-8'))
+                    elif kit[i][0].text == 'd_base64':
+                        print(input)
+                        kit[i][1].text = base64.b64decode(bytes(input, 'utf-8'))
+                    elif kit[i][0].text == 'd_hex':
+                        kit[i][1].text = binascii.unhexlify(bytes(input, 'utf-8'))
+                
+                output = kit[i][1].text
 
         request_spinner.bind(text=show_kit)
         parameter_spinner.bind(text=show_kit)
@@ -272,9 +295,9 @@ class ShowcaseApp(App):
         self.title = 'SCRATCHED BOARD'
         Clock.schedule_interval(self._update_clock, 1 / 60.)
         self.screens = {}
-        self.available_screens = sorted([
-            'send packets', "Note", "Encode", "SCRATCH BOARD"
-        ])
+        self.available_screens = [
+            "SCRATCH BOARD", 'send packets', "Note", "Encode"
+        ]
         self.screen_names = self.available_screens
         curdir = dirname(__file__)
         self.available_screens = [join(curdir, 'data', 'screens',
