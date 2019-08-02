@@ -25,6 +25,8 @@ copy/paste this directory into /sdcard/kivy/showcase on your Android device.
 
 '''
 
+# encoding: utf-8
+
 from time import time
 from kivy.app import App
 from os.path import dirname, join
@@ -38,6 +40,12 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.label import Label
+from kivy.uix.dropdown import DropDown
+from kivy.uix.button import Button
+from kivy.base import runTouchApp
+from kivy.uix.spinner import Spinner
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.slider import Slider
 from kivy.uix.behaviors import DragBehavior
 from kivy.config import Config
 
@@ -52,6 +60,24 @@ datas = []
 data_set = {}
 text_set = {}
 
+kit = []
+offset_x = [0.1, 0.4, 0.7]
+offset_y = [ y*0.18-0.1 for y in range(5, 0, -1)]
+
+class CustomDropDown(DropDown):
+    def do(self, layout):
+        dropdown = CustomDropDown()
+        mainbutton = Button(text='Hello', size_hint=(None, None))
+        mainbutton.bind(on_release=dropdown.open)
+        dropdown.bind(on_select=lambda instance, x: setattr(mainbutton, 'text', x))
+        #layout.add_widget(dropdown)
+
+class RootWidget(Screen):
+    def on_spinner_select(self, text):
+        print (text)
+    def do(self):
+        print("hello world")
+
 class Component(DragBehavior, BoxLayout):
     pass
 
@@ -60,6 +86,7 @@ class Component(DragBehavior, BoxLayout):
 Config.set('graphics', 'resizable', True)
 Config.set('graphics', 'minimum_width', '700')
 Config.set('graphics', 'minimum_height', '600')
+
 
 class ShowcaseScreen(Screen):
     fullscreen = BooleanProperty(False)
@@ -80,13 +107,187 @@ class ShowcaseApp(App):
     screen_names = ListProperty([])
     hierarchy = ListProperty([])
 
+    def create_selector(self, layout):
+        request_spinner = Spinner(
+            text='<request>',
+            values=['POST', 'GET'],
+            size_hint=(None, None),
+            size=(100, 44),
+            pos_hint={'center_x': .08, 'center_y': .95}
+        )
+
+        parameter_spinner = Spinner(
+            text='<parameter>',
+            values=['URL', 'user-agent', 'Referer', 'cookie'],
+            size_hint=(None, None),
+            size=(100, 44),
+            pos_hint={'center_x': .23, 'center_y': 0.95}
+        )
+
+        crypto_spinner = Spinner(
+            text='<crypto>',
+            values=['URLEncode', 'e_base64', 'e_md5', 'e_hex', 'd_base64', 'd_hex'],
+            size_hint=(None, None),
+            size=(100, 44),
+            pos_hint={'center_x': .38, 'center_y': .95}
+        )
+
+        def visible(self):
+            try:
+                for i in range(len(kit)):
+                    if self == kit[i][0]:
+                        if kit[i][1].background_color == [0,0,0,0]:
+                            kit[i][1].background_color = [1,1,1,1]
+                            kit[i][1].foreground_color = [0,0,0,1]
+                        else:
+                            kit[i][1].background_color = [0,0,0,0]
+                            kit[i][1].foreground_color = [0,0,0,0]
+                        return
+            except:
+                print("failed")
+
+        def show_kit(spinner, text):
+            global kit
+            if len(kit) >= 15:
+                print("Too many!!")
+                return
+
+            pos_x = offset_x[len(kit)//5]
+            pos_y = offset_y[len(kit)%5]
+            gap = 0.25
+            slider_len  = .15
+            slider_len2 = .1
+            if text == "POST" or text == "GET":
+                B1 = Button(text = text, size_hint=(None, None), pos_hint={'center_x': pos_x, 'center_y': pos_y}, height=30, width=80)
+                B1.bind(on_press=visible);
+                T1 = TextInput(text='Response...', multiline=True, size_hint=(None, None), pos_hint={'center_x': pos_x + gap, 'center_y': pos_y}, height=100, width=500, background_color=[0,0,0,0], foreground_color=[0,0,0,0])
+                layout.add_widget(B1)
+                layout.add_widget(T1)
+                if len(kit) == 0:
+                    kit.append([B1, T1])
+                else:
+                    S1 = Slider(orientation='vertical', value=0, min=0, max=0, size_hint=(slider_len,slider_len), pos_hint={'center_x': pos_x, 'center_y': pos_y+0.1})
+                    layout.add_widget(S1)
+                    if len(kit)%5 != 4:
+                        if len(kit)%5 == 0:
+                            S1.size_hint = (slider_len2, slider_len2)
+                            S1.pos_hint = {'center_x': pos_x, 'center_y': pos_y+0.07}
+                        kit.append([B1, T1, S1])
+                    else:
+                        S2 = Slider(orientation='vertical', value=0, min=0, max=0, size_hint=(slider_len,slider_len), pos_hint={'center_x': pos_x, 'center_y': pos_y-0.07})
+                        layout.add_widget(S2)
+                        kit.append([B1, T1, S1, S2])
+
+                spinner.text = "<request>" 
+
+            elif text == "URL" or text == "user-agent" or text == "Referer" or text == "cookie":
+                B1 = Button(text = text, size_hint=(None, None), pos_hint={'center_x': pos_x, 'center_y': pos_y}, height=30, width=80)
+                B1.bind(on_press=visible)
+                T1 = TextInput(text='', multiline=True, size_hint=(None, None), pos_hint={'center_x': pos_x + gap, 'center_y': pos_y}, height=50, width=500,background_color=[0,0,0,0], foreground_color=[0,0,0,0])
+                layout.add_widget(B1)
+                layout.add_widget(T1)
+                if len(kit) == 0:
+                    kit.append([B1, T1])
+                else:
+                    S1 = Slider(orientation='vertical', value=0, min=0, max=0, size_hint=(slider_len,slider_len), pos_hint={'center_x': pos_x, 'center_y': pos_y+0.1})
+                    layout.add_widget(S1)
+                    if len(kit)%5 != 4:
+                        if len(kit)%5 == 0:
+                            S1.size_hint = (slider_len2, slider_len2)
+                            S1.pos_hint = {'center_x': pos_x, 'center_y': pos_y+0.07}
+                        kit.append([B1, T1, S1])
+                    else:
+                        S2 = Slider(orientation='vertical', value=0, min=0, max=0, size_hint=(slider_len,slider_len), pos_hint={'center_x': pos_x, 'center_y': pos_y-0.07})
+                        layout.add_widget(S2)
+                        kit.append([B1, T1, S1, S2])
+
+                spinner.text = "<parameter>"
+            elif text == "URLEncode" or text[0] == 'e' or text[0] == 'd':
+                B1 = Button(text = text, size_hint=(None, None), pos_hint={'center_x': pos_x, 'center_y': pos_y}, height=30, width=80)
+                B1.bind(on_press=visible)
+                T1 = TextInput(text='', multiline=True, size_hint=(None, None), pos_hint={'center_x': pos_x + gap, 'center_y': pos_y}, height=50, width=500,background_color=[0,0,0,0], foreground_color=[0,0,0,0])
+                layout.add_widget(B1)
+                layout.add_widget(T1)
+                if len(kit) == 0:
+                    kit.append([B1, T1])
+                else:
+                    S1 = Slider(orientation='vertical', value=0, min=0, max=0, size_hint=(slider_len,slider_len), pos_hint={'center_x': pos_x, 'center_y': pos_y+0.1})
+                    layout.add_widget(S1)
+                    if len(kit)%5 != 4:
+                        if len(kit)%5 == 0:
+                            S1.size_hint = (slider_len2, slider_len2)
+                            S1.pos_hint = {'center_x': pos_x, 'center_y': pos_y+0.07}
+                        kit.append([B1, T1, S1])
+                    else:
+                        S2 = Slider(orientation='vertical', value=0, min=0, max=0, size_hint=(slider_len,slider_len), pos_hint={'center_x': pos_x, 'center_y': pos_y-0.07})
+                        layout.add_widget(S2)
+                        kit.append([B1, T1, S1, S2])
+
+                spinner.text = "<crypto>"
+
+        def remove_one(self):
+            global kit
+            if len(kit) == 0:
+                return
+            
+            for widget in kit[-1]:
+                layout.remove_widget(widget)
+            kit.remove(kit[-1])
+
+        def start(self):
+            headers_ = {}
+            params = []
+            url = ""
+            for i in range(len(kit)):
+                if kit[i][0].text == 'POST' or kit[i][0].text == 'GET':
+                    try:
+                        if kit[i][0].text[0] == 'P':
+                            r = requests.post(url, headers=headers_, data=params, timeout=5)
+                        else:
+                            r = requests.get(url, headers=headers_, timeout=5)
+
+                        r.encoding = 'utf-8'
+                        print(r.encoding)
+                        print(r.text)
+                        print(headers_)
+                        kit[i][1].text = bytes(r.text, 'utf-8')
+                        params = []
+                        headers_ = {}
+                        url = ""
+                    except:
+                        print("Invalid argument")
+
+                elif kit[i][0].text == 'URL' or kit[i][0].text == "user-agent" or kit[i][0].text == "Referer" or kit[i][0].text == "cookie":
+                    if kit[i][0].text == "URL":
+                        url = kit[i][1].text
+                    else:
+                        headers_[kit[i][0].text] = kit[i][1].text
+
+                elif kit[i][0].text == "URLEncode" or kit[i][0].text[0] == 'e' or kit[i][0].text[0] == 'd':
+                    pass
+
+        request_spinner.bind(text=show_kit)
+        parameter_spinner.bind(text=show_kit)
+        crypto_spinner.bind(text=show_kit)
+        layout.add_widget(request_spinner)
+        layout.add_widget(parameter_spinner)
+        layout.add_widget(crypto_spinner)
+
+        clear = Button(size_hint=(None, None), pos_hint={'center_x': 0.75, 'center_y': 0.95}, height=30, width=80, text='Clear')
+        clear.bind(on_press=remove_one)
+        layout.add_widget(clear)
+        test = Button(size_hint=(None, None), pos_hint={'center_x': 0.93, 'center_y': 0.95}, height=30, width=80, text='test')
+        test.bind(on_press=start)
+        layout.add_widget(test)
+
     def build(self):
-        self.title = 'lighted hackbar'
+        self.title = 'SCRATCHED BOARD'
         Clock.schedule_interval(self._update_clock, 1 / 60.)
         self.screens = {}
-        self.available_screens = [
-            'send packets', "Tutorial", "Encode", "Scratch"
-        ]
+        self.available_screens = sorted([
+            'send packets', "Note", "Encode", "SCRATCH BOARD", "Scratch"
+        ])
+
         self.screen_names = self.available_screens
         curdir = dirname(__file__)
         self.available_screens = [join(curdir, 'data', 'screens',
@@ -302,11 +503,11 @@ class ShowcaseApp(App):
     
     def search_source_code(self, layout):
         def search(self):
-            #try:
-            code = requests.get(URL.text, timeout=5).text
-            print(code)
-            #except:
-             #   print("Invlid URL")
+            try:
+                code = requests.get(URL.text, timeout=5).text()
+                print(code)
+            except:
+                print("Invlid URL")
 
         confirm = Button(size_hint=(None, None), x=320, y=200, width=100, height=33, text='search')
         confirm.bind(on_press=search)
