@@ -33,10 +33,12 @@ from kivy.properties import NumericProperty, StringProperty, BooleanProperty,\
     ListProperty
 from kivy.clock import Clock
 from kivy.animation import Animation
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import Screen
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.label import Label
+from kivy.uix.behaviors import DragBehavior
 from kivy.config import Config
 
 import requests
@@ -50,6 +52,11 @@ datas = []
 data_set = {}
 text_set = {}
 
+class Component(DragBehavior, BoxLayout):
+    pass
+
+#Config.set('graphics', 'width', '1280')
+#Config.set('graphics', 'height', '720')
 Config.set('graphics', 'resizable', True)
 Config.set('graphics', 'minimum_width', '700')
 Config.set('graphics', 'minimum_height', '600')
@@ -77,9 +84,9 @@ class ShowcaseApp(App):
         self.title = 'lighted hackbar'
         Clock.schedule_interval(self._update_clock, 1 / 60.)
         self.screens = {}
-        self.available_screens = sorted([
-            'send packets', "Tutorial", "Encode"
-        ])
+        self.available_screens = [
+            'send packets', "Tutorial", "Encode", "Scratch"
+        ]
         self.screen_names = self.available_screens
         curdir = dirname(__file__)
         self.available_screens = [join(curdir, 'data', 'screens',
