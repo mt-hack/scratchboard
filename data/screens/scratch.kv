@@ -1,0 +1,123 @@
+#:kivy 1.8.0
+
+ShowcaseScreen:
+    name: 'Scratch'
+    fullscreen: True
+
+    BoxLayout:
+        orientation: 'horizontal'
+        SFloatLayout:
+            Label:
+                markup: True
+                text: '[color=909090]No module loaded[/color]'
+        SBoxLayout:
+            orientation: 'vertical'
+            padding: (40, 10)
+            BoxLayout:
+                #padding: (0, 10)
+                size_hint: (1.0, 0.2)
+                TargetComponent
+            BoxLayout:
+                padding: (0, 10)
+                size_hint: (1.0, 0.3)
+                ParameterComponent
+            BoxLayout:
+                padding: (0, 10)
+                size_hint: (1.0, 0.3)
+                Component
+            BoxLayout:
+                padding: (0, 10)
+                size_hint: (1.0, 0.5)
+                Component
+
+
+#<CStackLayout@StackLayout+BackgroundColor>
+#<CAnchorLayout@AnchorLayout+BackgroundColor>
+#<CGridLayout@GridLayout+BackgroundColor>
+    
+<SFloatLayout@FloatLayout+BackgroundColorLeft>
+    size_hint: (0.6, 1.0)
+<BackgroundColorLeft@Widget>
+    pos_hint: {'center_x': .5, 'center_y': .5}
+    #size_hint: 1.0, 1.0
+    canvas.before:
+        Color:
+            rgba: .6, .3, .4, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+<SBoxLayout@BoxLayout+BackgroundColorRight>
+    size_hint: (0.3, 1.0)
+<BackgroundColorRight@Widget>
+    pos_hint: {'center_x': .5, 'center_y': .5}
+    #size_hint: 1.0, 1.0
+    canvas.before:
+        Color:
+            rgba: .2, .3, .4, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+<SLabel@Label>
+    size_hint: (0.25, 0.7)
+<STextInput@TextInput>
+    size_hint: (0.8, 0.6)
+    multiline: False
+
+<TargetComponent@Component>
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            size_hint: (0.25, 0.3)
+            Label:
+                text: 'Target'
+                size_hint: (0.35, 0.7)
+                
+        AnchorLayout:
+            anchor_x: 'center'
+            anchor_y: 'bottom'
+            padding: [0, 0, 0, 20]
+            TextInput:
+                hint_text: 'Target site'
+                size_hint: (0.8, 0.35)
+
+
+<ParameterComponent@Component>
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            size_hint: (0.4, 0.3)
+            Label:
+                text: 'Parameter'
+                size_hint: (0.35, 0.7)
+        BoxLayout:
+            size_hint: (1.0, 0.7)
+            orientation: 'vertical'
+            padding: [20]
+            TextInput:
+                hint_text: 'Type'
+                size_hint: (0.8, 0.3)
+            TextInput:
+                hint_text: 'query'
+                size_hint: (0.8, 0.3)
+
+<Component>:
+    drag_rectangle: self.x, self.y, self.width, self.height
+    drag_timeout: 10000000
+    drag_distance: 0
+    pos_hint: {'center_x': .5, 'center_y': .5}
+    canvas.before:
+        Color:
+            rgba: .1, .1, .1, 1
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [20]
+
+#canvas.before:
+#    Color:
+#        rgba: .5, .5, .5, 1
+#    Line:
+#        width: 2
+#        rectangle: self.x, self.y, self.width, self.height
