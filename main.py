@@ -273,7 +273,7 @@ class ShowcaseApp(App):
         Clock.schedule_interval(self._update_clock, 1 / 60.)
         self.screens = {}
         self.available_screens = sorted([
-            'send packets', "Tutorial", "Encode", "Splitter"
+            'send packets', "Note", "Encode", "SCRATCH BOARD"
         ])
         self.screen_names = self.available_screens
         curdir = dirname(__file__)
