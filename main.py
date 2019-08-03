@@ -57,11 +57,12 @@ import urllib
 import base64
 import hashlib
 import binascii
+import copy
 
 #Window.size = (1366, 768)
-Window.fullscreen = 'auto'
-#Config.set('graphics', 'width', '1280')
-#Config.set('graphics', 'height', '720')
+#Window.fullscreen = 'auto'
+Config.set('graphics', 'width', '1280')
+Config.set('graphics', 'height', '720')
 #Config.set('graphics', 'resizable', True)
 #Config.set('graphics', 'minimum_width', '700')
 #Config.set('graphics', 'minimum_height', '600')
@@ -73,6 +74,11 @@ text_set = {}
 kit = []
 offset_x = [0.1, 0.4, 0.7]
 offset_y = [ y*0.18-0.1 for y in range(5, 0, -1)]
+
+scratchwindow = None
+scratchboard = None
+sidebar = None
+boardText = None
 
 class CustomDropDown(DropDown):
     def do(self, layout):
@@ -89,7 +95,15 @@ class RootWidget(Screen):
         print("hello world")
 
 class Component(DragBehavior, BoxLayout):
-    pass
+    def on_touch_up(self, touch):
+        if self.center_x > scratchboard.x and self.center_x < scratchboard.right \
+            and self.center_y > scratchboard.y and self.center_y < scratchboard.top:
+            print("Hello")
+            boardText.text = ''
+            #touch.pos = (touch.ox, touch.oy)
+            #scratchwindow.remove_widget(sidebar)
+            #scratchwindow.add_widget(origin_sidebar)
+        return super(Component, self).on_touch_up(touch)
 
 class ShowcaseScreen(Screen):
     fullscreen = BooleanProperty(False)
@@ -301,6 +315,13 @@ class ShowcaseApp(App):
         test = Button(size_hint=(None, None), pos_hint={'center_x': 0.93, 'center_y': 0.95}, height=30, width=80, text='test')
         test.bind(on_press=start)
         layout.add_widget(test)
+
+    def init_scratch(self, window, board, text, toolbox):
+        global scratchboard, sidebar, scratchwindow, boardText
+        scratchwindow = window
+        scratchboard = board
+        sidebar = toolbox
+        boardText = text
 
     def build(self):
         self.title = 'SCRATCHED BOARD'

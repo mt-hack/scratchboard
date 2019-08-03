@@ -3,14 +3,19 @@
 ShowcaseScreen:
     name: 'Scratch'
     fullscreen: True
+    on_parent: if args[1] : app.init_scratch(scratch_window, board, board_text, sidebar)
 
     BoxLayout:
+        id: scratch_window
         orientation: 'horizontal'
         SFloatLayout:
+            id: board
             Label:
+                id: board_text
                 markup: True
                 text: '[color=909090]No module loaded[/color]'
         SBoxLayout:
+            id: sidebar
             orientation: 'vertical'
             padding: (40, 10)
             BoxLayout:
